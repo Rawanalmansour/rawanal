@@ -1,25 +1,58 @@
-const texts = document.querySelector(".texts");
+var speechRecognition = window.webkitSpeechRecognition
 
-window.SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
+var recognition = new speechRecognition()
 
-const recognition = new SpeechRecognition();
-recognition.interimResults = true;
+var textbox = $("#textbox")
 
-let p = document.createElement("p");
+var instructions = $("#instructions")
 
-recognition.addEventListener("result", (e) => {
-    texts.appendChild(p);
-    const text = Array.from(e.results)
-        .map((result) => result[0])
-        .map((result) => result.transcript)
-        .join("");
-    p.innerText = text;
-    if (e.results[0].isFinal) {
-       p = document.createElement("p");
-    }
- });
- recognition.addEventListener("end", () => {
-    recognition.start();
-});
-recognition.start();
+var content = ''
+
+recognition.continuous = true
+
+// recognition is started
+
+recognition.onstart = function() {
+
+ instructions.text("Voice Recognition is On")
+
+}
+
+recognition.onspeechend = function() {
+
+ instructions.text("No Activity")
+
+}
+
+recognition.onerror = function() {
+
+ instruction.text("Try Again")
+
+}
+
+recognition.onresult = function(event) {
+
+ var current = event.resultIndex;
+
+ var transcript = event.results[current][0].transcript
+
+
+
+ content += transcript
+ onChangespeech()
+ textbox.val(content)
+
+}
+
+$("#start-btn").click(function(event) {
+
+ recognition.start()
+
+})
+
+textbox.on('input', function() {
+
+ content = $(this).val()
+
+})
+
